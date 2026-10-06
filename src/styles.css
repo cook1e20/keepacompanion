@@ -1,0 +1,103 @@
+/*
+ * Sized against Keepa's ag-theme-balham rows (28px). Everything is scoped
+ * under .kc- so nothing here can leak into Keepa's own cells.
+ */
+
+.kc-ag-cell {
+  padding: 0 4px !important;
+  overflow: visible;
+}
+
+.kc-cell {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  gap: 2px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* ---------- Track ---------- */
+
+.kc-status {
+  justify-content: flex-start;
+}
+
+.kc-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 2px 0;
+  border: 1px solid #c8ccd0;
+  border-radius: 3px;
+  background: #fff;
+  color: #5a6570;
+  font-size: 10px;
+  line-height: 14px;
+  cursor: pointer;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+
+.kc-btn:hover {
+  border-color: #8b949e;
+  background: #f2f4f6;
+}
+
+.kc-btn.kc-on {
+  color: #fff;
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.kc-btn-checked.kc-on { background: #2f6fb0; }
+.kc-btn-bought.kc-on { background: #1f7a42; }
+.kc-btn-near_miss.kc-on { background: #b97609; }
+.kc-btn-pass.kc-on { background: #8c2f2f; }
+
+/* ---------- Searched ---------- */
+
+.kc-searched {
+  justify-content: center;
+}
+
+.kc-searched-btn {
+  width: 100%;
+  padding: 2px 0;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: #33404d;
+  font-size: 11px;
+  line-height: 15px;
+  cursor: pointer;
+}
+
+.kc-searched-btn:hover {
+  border-color: #c8ccd0;
+  background: #f2f4f6;
+}
+
+.kc-searched-btn.kc-never {
+  color: #9aa4ad;
+}
+
+/* ---------- Gate ---------- */
+
+.kc-gating {
+  justify-content: center;
+}
+
+.kc-badge {
+  display: inline-block;
+  min-width: 34px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 15px;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.kc-gate-open { background: #dff1e4; color: #1f7a42; }
+.kc-gate-gated { background: #fbe3e3; color: #8c2f2f; }
+.kc-gate-error { background: #fdf1d9; color: #8a6414; }
+.kc-gate-unknown { background: transparent; color: #b7bec5; }

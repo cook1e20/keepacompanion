@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <title>Keepa Companion — Settings</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 28px;
+        max-width: 560px;
+        font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        color: #22303c;
+        background: #f7f8f9;
+      }
+      h1 { margin: 0 0 4px; font-size: 19px; }
+      p.lede { margin: 0 0 24px; color: #5a6570; }
+      label { display: block; margin: 0 0 16px; font-weight: 600; font-size: 13px; }
+      input {
+        display: block;
+        width: 100%;
+        margin-top: 5px;
+        padding: 7px 9px;
+        border: 1px solid #c8ccd0;
+        border-radius: 4px;
+        font: inherit;
+        font-weight: 400;
+        box-sizing: border-box;
+      }
+      .hint { display: block; margin-top: 4px; font-weight: 400; font-size: 12px; color: #5a6570; }
+      button {
+        padding: 8px 18px;
+        border: 0;
+        border-radius: 4px;
+        background: #2f6fb0;
+        color: #fff;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      #status { margin-left: 12px; font-size: 13px; color: #1f7a42; }
+    </style>
+  </head>
+  <body>
+    <h1>Keepa Companion</h1>
+    <p class="lede">
+      Credentials stay in this browser profile — nothing is bundled into the extension.
+    </p>
+
+    <label>
+      Supabase URL
+      <input id="supabaseUrl" type="url" placeholder="https://your-project.supabase.co" />
+    </label>
+
+    <label>
+      Supabase anon key
+      <input id="supabaseAnonKey" type="password" autocomplete="off" />
+      <span class="hint">Grants access to <code>asin_tracker</code> only.</span>
+    </label>
+
+    <label>
+      Gating function secret
+      <input id="gatingFunctionSecret" type="password" autocomplete="off" />
+      <span class="hint">
+        Matches <code>KC_SHARED_SECRET</code> on the <code>gating-check</code> edge function.
+        Leave blank to run with the Track and Searched columns only.
+      </span>
+    </label>
+
+    <label>
+      Gating cache age (days)
+      <input id="gatingTtlDays" type="number" min="1" max="365" />
+      <span class="hint">How long a completed restriction check is trusted before re-asking SP-API.</span>
+    </label>
+
+    <button id="save" type="button">Save</button>
+    <span id="status" role="status"></span>
+
+    <script src="options.js"></script>
+  </body>
+</html>
