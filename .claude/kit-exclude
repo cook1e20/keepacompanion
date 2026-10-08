@@ -1,0 +1,3 @@
+# Not deployed on Vercel: skip the Vercel-specific shipping skills.
+ship
+wizard
