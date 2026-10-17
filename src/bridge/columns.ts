@@ -1,4 +1,5 @@
 import { badgeFor } from '../lib/gating.js';
+import { googleSearchUrl } from '../lib/search.js';
 import { formatAge, formatStamp, STATUS_LABELS, STATUS_SHORT } from '../lib/tracker.js';
 import { TRACK_STATUSES, type TrackStatus } from '../lib/types.js';
 import {
@@ -11,10 +12,34 @@ import {
   trackerFor,
 } from './store.js';
 
-export const KC_COLUMN_IDS = ['kc_status', 'kc_searched', 'kc_gating'] as const;
+export const KC_COLUMN_IDS = ['kc_status', 'kc_searched', 'kc_gating', 'kc_search'] as const;
 
 interface CellParams {
-  data?: { asin?: string } | undefined;
+  data?: ({ asin?: string } & Record<string, unknown>) | undefined;
+}
+
+/**
+ * UNVERIFIED: the title/brand field names on Keepa's finder row data have not
+ * been captured from a live page. Candidates are tried in order; this is the
+ * only place that reads them. Once the operator confirms the real names
+ * (devtools: inspect `params.data` on a row), trim these lists and record them
+ * in CLAUDE.md. A missing field degrades to a title-only query, or a disabled
+ * button when neither is found.
+ */
+const TITLE_FIELDS = ['title', 'productTitle'] as const;
+const BRAND_FIELDS = ['brand', 'manufacturer'] as const;
+
+function firstString(data: CellParams['data'], fields: readonly string[]): string | undefined {
+  if (!data) return undefined;
+  for (const field of fields) {
+    const value = data[field];
+    if (typeof value === 'string' && value.trim()) return value;
+  }
+  return undefined;
+}
+
+function searchUrlFor(data: CellParams['data']): string | null {
+  return googleSearchUrl(firstString(data, BRAND_FIELDS), firstString(data, TITLE_FIELDS));
 }
 
 interface PaintEntry {
@@ -181,6 +206,38 @@ class SearchedRenderer extends BaseRenderer {
   }
 }
 
+class SearchRenderer extends BaseRenderer {
+  protected className = 'kc-search';
+  protected wantsGating = false;
+  private button = document.createElement('button');
+  private url: string | null = null;
+
+  override init(params: CellParams): void {
+    this.url = searchUrlFor(params.data);
+    super.init(params);
+  }
+
+  protected build(): void {
+    this.button.type = 'button';
+    this.button.className = 'kc-btn kc-search-btn';
+    this.button.textContent = 'G';
+    this.button.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (!this.url || !this.asin) return;
+      window.open(this.url, '_blank', 'noopener');
+      void stampSearched(this.asin);
+    });
+    this.eGui.append(this.button);
+  }
+
+  protected paint(): void {
+    this.button.disabled = !this.url;
+    this.button.title = this.url
+      ? 'Search Google UK for brand + title (stamps Searched)'
+      : 'No title on this row to search for';
+  }
+}
+
 class GatingRenderer extends BaseRenderer {
   protected className = 'kc-gating';
   protected wantsGating = true;
@@ -261,6 +318,16 @@ export function companionColumnDefs(): unknown[] {
         if (!row || row.gated === null) return '';
         return row.gated ? 'GATED' : 'OK';
       },
+    },
+    {
+      ...base,
+      colId: 'kc_search',
+      headerName: 'Search',
+      headerTooltip: 'Google UK search on brand + title — also stamps Searched',
+      width: 64,
+      minWidth: 56,
+      cellRenderer: SearchRenderer,
+      valueGetter: () => '',
     },
   ];
 }

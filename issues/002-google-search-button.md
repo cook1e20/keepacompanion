@@ -41,12 +41,23 @@ per row.
 
 ## Acceptance criteria
 
-- [ ] Search column appears pinned right and survives virtual scrolling, pagination and
+- [x] Search column appears pinned right and survives virtual scrolling, pagination and
       Keepa's `setColumnDefs` re-renders (same guarantees as the existing columns).
-- [ ] Click opens a UK Google search for the row's product on brand + title.
-- [ ] Click stamps Searched for that ASIN.
-- [ ] Query builder is a pure, tested function; `npm test` and `npm run typecheck` pass.
+- [x] Click opens a UK Google search for the row's product on brand + title.
+- [x] Click stamps Searched for that ASIN.
+- [x] Query builder is a pure, tested function; `npm test` and `npm run typecheck` pass.
 - [ ] HITL: operator loads the unpacked build and checks a page of real rows.
+
+## Progress
+
+2026-10-17: Built `src/lib/search.ts` (+ tests), `SearchRenderer` / `kc_search` column in
+`src/bridge/columns.ts`, button click calls `window.open` then `stampSearched`. `npm test`,
+`npm run typecheck`, `npm run build` green. **Open for the operator:** Keepa's real
+title/brand field names on `params.data` are NOT yet verified. `columns.ts` tries
+`title`/`productTitle` and `brand`/`manufacturer` (one accessor, `TITLE_FIELDS`/`BRAND_FIELDS`);
+the button is disabled when no title is found. Inspect `params.data` on a real row, trim the
+candidate lists, and record the names in CLAUDE.md. Pinned-right / scroll / `setColumnDefs`
+survival is by construction (same mechanism as the other columns) but needs the live check.
 
 ## Blocked by
 
